@@ -74,7 +74,8 @@ def derived_quantities(M1, M3, YM23, RM1, V):
     disc = b * b - 4 * a * c
     if disc < 0 or a == 0:
         return None
-    M2 = (-b + math.sqrt(disc)) / (2 * a)
+        
+    M2 = (5.4466 - (544.66/YM23))*M3
     if M2 <= 0:
         return None
     RM2 = KSM * (1.059818 * M2 + 0.19082 * M3)

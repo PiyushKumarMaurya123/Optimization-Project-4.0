@@ -58,7 +58,29 @@ MODEL, FEATURES, TARGETS = bundle["model"], bundle["features"], bundle["targets"
 SAFE = bundle["safe_ranges"]
 
 
-
+# ------------------------------------------------------- derived quantities
+def derived_quantities(M1, M3, YM23, RM1, V):
+    """Solve for M2, RM2, X, YRM12 from the calibrated process relations.
+    (Internal only — the UI never exposes the equations.)"""
+    if YM23 <= 0 or YM23 >= 100 or RM1 <= 0 or M3 <= 0 or V <= 0:
+        return None
+    KSM = RM1 / (1 + 1.04898 * M1)
+    k = (100.0 / YM23 - 1.0) / 0.1836          # = X * M3 / M2
+    if k <= 0:
+        return None
+    a = KSM * 1.059818
+    b = RM1 + KSM * 0.19082 * M3
+    c = -60.0 * V * M3 / k
+    disc = b * b - 4 * a * c
+    if disc < 0 or a == 0:
+        return None
+    M2 = (-b + math.sqrt(disc)) / (2 * a)
+    if M2 <= 0:
+        return None
+    RM2 = KSM * (1.059818 * M2 + 0.19082 * M3)
+    X = (V * 60.0) / (RM1 + RM2)
+    YRM12 = RM1 / RM2 if RM2 > 0 else float("nan")
+    return {"M2": M2, "RM2": RM2, "X": X, "YRM12": YRM12}
 # ------------------------------------------------------------------- header
 st.title("🧪 Product Composition Predictor")
 st.caption(
@@ -69,13 +91,13 @@ st.caption(
 # ------------------------------------------------------------------ sliders
 # Extended exploration ranges (wider than the trusted data window on purpose)
 EXT = {
-    "V":    dict(lo=8,    hi=80,   step=8,    fmt="%d",   label="V — feed rate"),
-    "T":    dict(lo=20.0, hi=200.0, step=1.0,  fmt="%.0f", label="T — temperature (°C)"),
-    "P1":   dict(lo=1.0,  hi=15.0, step=0.1,  fmt="%.1f", label="P1 — pressure 1"),
-    "P2":   dict(lo=0.0,  hi=10.0, step=0.1,  fmt="%.1f", label="P2 — pressure 2"),
-    "RM1":  dict(lo=1.0,  hi=30.0, step=0.1,  fmt="%.1f", label="RM1 — raw material 1 flow"),
-    "YM23": dict(lo=5.0,  hi=95.0, step=0.1,  fmt="%.1f", label="YM23 — ratio index (%)"),
-    "M3":   dict(lo=5.0,  hi=100.0, step=0.1, fmt="%.1f", label="M3 — moles of component 3"),
+    "V":    dict(lo=8,    hi=80,   step=8,    fmt="%d",   label="V"),
+    "T":    dict(lo=20.0, hi=200.0, step=1.0,  fmt="%.0f", label="T"),
+    "P1":   dict(lo=1.0,  hi=15.0, step=0.1,  fmt="%.1f", label="P1"),
+    "P2":   dict(lo=0.0,  hi=10.0, step=0.1,  fmt="%.1f", label="P2"),
+    "RM1":  dict(lo=1.0,  hi=30.0, step=0.1,  fmt="%.1f", label="RM1"),
+    "YM23": dict(lo=5.0,  hi=95.0, step=0.1,  fmt="%.1f", label="YM23"),
+    "M3":   dict(lo=5.0,  hi=100.0, step=0.1, fmt="%.1f", label="M3"),
 }
 DEFAULTS = {"V": 40, "T": 75, "P1": 5.4, "P2": 5.0, "RM1": 10.4, "YM23": 68.5, "M3": 10.0}
 

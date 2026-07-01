@@ -57,29 +57,7 @@ bundle = load_bundle()
 MODEL, FEATURES, TARGETS = bundle["model"], bundle["features"], bundle["targets"]
 SAFE = bundle["safe_ranges"]
 
-# ------------------------------------------------------- derived quantities
-def derived_quantities(M1, M3, YM23, RM1, V):
-    """Solve for M2, RM2, X, YRM12 from the calibrated process relations.
-    (Internal only — the UI never exposes the equations.)"""
-    if YM23 <= 0 or YM23 >= 100 or RM1 <= 0 or M3 <= 0 or V <= 0:
-        return None
-    KSM = RM1 / (1 + 1.04898 * M1)
-    k = (100.0 / YM23 - 1.0) / 0.1836          # = X * M3 / M2
-    if k <= 0:
-        return None
-    a = KSM * 1.059818
-    b = RM1 + KSM * 0.19082 * M3
-    c = -60.0 * V * M3 / k
-    disc = b * b - 4 * a * c
-    if disc < 0 or a == 0:
-        return None
-    M2 = (-b + math.sqrt(disc)) / (2 * a)
-    if M2 <= 0:
-        return None
-    RM2 = KSM * (1.059818 * M2 + 0.19082 * M3)
-    X = (V * 60.0) / (RM1 + RM2)
-    YRM12 = RM1 / RM2 if RM2 > 0 else float("nan")
-    return {"M2": M2, "RM2": RM2, "X": X, "YRM12": YRM12}
+
 
 # ------------------------------------------------------------------- header
 st.title("🧪 Product Composition Predictor")

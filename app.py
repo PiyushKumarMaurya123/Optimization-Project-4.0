@@ -91,13 +91,13 @@ st.caption(
 # ------------------------------------------------------------------ sliders
 # Extended exploration ranges (wider than the trusted data window on purpose)
 EXT = {
-    "V":    dict(lo=8,    hi=80,   step=8,    fmt="%d",   label="V - feed rate"),
-    "T":    dict(lo=20.0, hi=200.0, step=1.0,  fmt="%.0f", label="T - temperature ( deg C)"),
-    "P1":   dict(lo=1.0,  hi=15.0, step=0.1,  fmt="%.1f", label="P1 - pressure 1"),
-    "P2":   dict(lo=0.0,  hi=10.0, step=0.1,  fmt="%.1f", label="P2 - pressure 2"),
-    "RM1":  dict(lo=1.0,  hi=30.0, step=0.1,  fmt="%.1f", label="RM1 - raw material 1 flow"),
-    "YM23": dict(lo=5.0,  hi=95.0, step=0.1,  fmt="%.1f", label="YM23 - ratio index (%)"),
-    "M3":   dict(lo=5.0,  hi=100.0, step=0.1, fmt="%.1f", label="M3 - moles of component 3"),
+    "V":    dict(lo=8,    hi=80,   step=8,    fmt="%d",   label="V"),
+    "T":    dict(lo=20.0, hi=200.0, step=1.0,  fmt="%.0f", label="T"),
+    "P1":   dict(lo=1.0,  hi=15.0, step=0.1,  fmt="%.1f", label="P1"),
+    "P2":   dict(lo=0.0,  hi=10.0, step=0.1,  fmt="%.1f", label="P2"),
+    "RM1":  dict(lo=1.0,  hi=30.0, step=0.1,  fmt="%.1f", label="RM1"),
+    "YM23": dict(lo=5.0,  hi=95.0, step=0.1,  fmt="%.1f", label="YM23"),
+    "M3":   dict(lo=5.0,  hi=100.0, step=0.1, fmt="%.1f", label="M3"),
 }
 DEFAULTS = {"V": 40, "T": 75, "P1": 5.4, "P2": 5.0, "RM1": 10.4, "YM23": 68.5, "M3": 10.0}
 
